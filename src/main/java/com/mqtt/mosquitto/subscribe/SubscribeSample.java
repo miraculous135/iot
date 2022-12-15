@@ -2,20 +2,14 @@ package com.mqtt.mosquitto.subscribe;
 
 
 import com.mqtt.mosquitto.common.SpringUtils;
-import com.mqtt.mosquitto.entity.user;
-import com.mqtt.mosquitto.mapper.UserMapper;
-import com.mqtt.mosquitto.service.UserService;
+
+import com.mqtt.mosquitto.service.CovidService;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import java.util.List;
-
 
 /*
  * @ClassName
@@ -27,7 +21,7 @@ public class SubscribeSample {
 
     //定义一个订阅方法
     private ApplicationContext applicationContext = SpringUtils.getApplicationContext();
-    private UserService userService=applicationContext.getBean(UserService.class);
+    private CovidService covidService=applicationContext.getBean(CovidService.class);
 
 
 
@@ -91,7 +85,7 @@ public class SubscribeSample {
                     }catch(IOException e){
                         e.printStackTrace();
                     }*/
-                    userService.sendEmail(new String(message.getPayload()));
+                    covidService.sendEmail();
 
                 }
 

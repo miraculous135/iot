@@ -21,7 +21,7 @@ public class PublishSample {
             //主题名
             String topic = "mqtt/test";
             //消息内容
-            String content = "This is a message!";
+            String content = "send email to user";
             //QoS服务质量等级
             int qos = 1;
             //访问服务器地址
