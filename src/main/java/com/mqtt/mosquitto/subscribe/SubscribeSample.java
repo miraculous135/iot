@@ -2,20 +2,17 @@ package com.mqtt.mosquitto.subscribe;
 
 
 import com.mqtt.mosquitto.common.SpringUtils;
-import com.mqtt.mosquitto.entity.user;
-import com.mqtt.mosquitto.mapper.UserMapper;
-import com.mqtt.mosquitto.service.UserService;
+
+import com.mqtt.mosquitto.service.CovidService;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import java.util.List;
-
+import java.io.FileWriter;
+import java.io.IOException;
 
 /*
  * @ClassName
@@ -27,7 +24,7 @@ public class SubscribeSample {
 
     //定义一个订阅方法
     private ApplicationContext applicationContext = SpringUtils.getApplicationContext();
-    private UserService userService=applicationContext.getBean(UserService.class);
+    private CovidService covidService=applicationContext.getBean(CovidService.class);
 
 
 
@@ -76,22 +73,20 @@ public class SubscribeSample {
                     System.out.println("Qos:"+message.getQos());
                     String thisMes = "message content...消息：:"+new String(message.getPayload());
                     System.out.println(thisMes);
-                    /*try{
-                        String data = " This content will append to the end of the file";
-                        File file = new File("D:\\RiverFiles\\mqtt-message.txt");
+                    try{
+                        /*File file = new File("D:\\RiverFiles\\mqtt-message.txt");
                         //if file doesnt exists, then create it
                         if(!file.exists()){
                             file.createNewFile();
-                        }
+                        }*/
                         //true = append file
-                        FileWriter fileWritter = new FileWriter(file.getName(),true);
-                        fileWritter.write(thisMes);
+                        FileWriter fileWritter = new FileWriter("D:\\RiverFiles\\mqtt-message.txt",true);
+                        fileWritter.append(thisMes);
                         fileWritter.close();
-                        System.out.println(file);
                     }catch(IOException e){
                         e.printStackTrace();
-                    }*/
-                    userService.sendEmail(new String(message.getPayload()));
+                    }
+                    covidService.sendEmail();
 
                 }
 

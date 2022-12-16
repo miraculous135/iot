@@ -1,44 +1,32 @@
-package com.mqtt.mosquitto.controller;
+package com.mqtt.mosquitto.schedule;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mqtt.mosquitto.common.Result;
+import com.mqtt.mosquitto.common.SpringUtils;
 import com.mqtt.mosquitto.entity.today;
 import com.mqtt.mosquitto.entity.total;
-import com.mqtt.mosquitto.publish.PublishSample;
 import com.mqtt.mosquitto.service.CovidService;
-import com.mqtt.mosquitto.subscribe.SubscribeSample;
 import org.jsoup.Jsoup;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
-@RequestMapping("covid")
-public class CovidDataController {
-    @Autowired
-    CovidService covidService;
-    @GetMapping("")
-    public Result<String> test(){
-        try {
-            SubscribeSample subscribeSample=new SubscribeSample();
-            subscribeSample.sub();
-        }catch (Exception e){
-            System.out.println(e);
-        }
+@Configuration      //1.主要用于标记配置类，兼备Component的效果。
+@EnableScheduling   // 2.开启定时任务
 
-        PublishSample publishSample=new PublishSample();
-        publishSample.pub();
-        return Result.success("成功");
-    }
-    @GetMapping("data")
-    public Result<String> data() throws IOException {
+public class updateData {
+    private ApplicationContext applicationContext = SpringUtils.getApplicationContext();
+    CovidService covidService=applicationContext.getBean(CovidService.class);
+    @Scheduled(cron = "0 0 12 * * ?")
+    private void updateData() throws IOException {
+        System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
         String resultBody = Jsoup.connect("https://c.m.163.com/ug/api/wuhan/app/data/list-total")
                 .ignoreContentType(true)
                 .execute().body();
@@ -57,7 +45,7 @@ public class CovidDataController {
                 chinaTotal.getInteger("confirm"),
                 chinaTotal.getInteger("dead"),
                 chinaTotal.getInteger("heal"),
-               "中国"));
+                "中国"));
         todayList.add(new today(
                 chinaToday.getInteger("confirm"),
                 chinaToday.getInteger("dead"),
@@ -79,9 +67,9 @@ public class CovidDataController {
                     todayJson.getInteger("heal"),
                     json.getString("name")));
         }
-        if (covidService.saveData(totalList,todayList)){
-        return Result.success("success");
-        }
-        return Result.fail(10001,"error");
+
+        covidService.saveData(totalList,todayList);
+
     }
+
 }

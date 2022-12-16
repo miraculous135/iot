@@ -3,7 +3,6 @@ package com.mqtt.mosquitto.controller;
 import com.mqtt.mosquitto.common.Result;
 import com.mqtt.mosquitto.entity.user;
 import com.mqtt.mosquitto.service.UserService;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,14 +37,5 @@ public class UserController {
             return Result.fail(10001,"td失败");
         }
         return Result.success(re);
-    }
-    @GetMapping("email")
-    public Result<String> sendEmail(String message){
-        try {
-            userService.sendEmail(message);
-        }catch (Exception err){
-            System.out.println(err);
-        }
-        return Result.success("1");
     }
 }
