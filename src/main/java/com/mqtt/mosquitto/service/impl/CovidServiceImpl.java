@@ -71,4 +71,14 @@ public class CovidServiceImpl implements CovidService {
             mailSender.send(mimeMessage);
         });
     }
+    public today todayData(String area){
+        QueryWrapper<today> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("area",area);
+        return todayMapper.selectOne(queryWrapper);
+    }
+    public total totalData(String area){
+        QueryWrapper<total> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("area",area);
+        return totalMapper.selectOne(queryWrapper);
+    }
 }

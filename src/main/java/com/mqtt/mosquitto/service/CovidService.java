@@ -10,4 +10,6 @@ import java.util.List;
 public interface CovidService {
     boolean saveData(List<total> totalList,List<today> todayList);
     void sendEmail();
+    total totalData(String area);
+    today todayData(String area);
 }

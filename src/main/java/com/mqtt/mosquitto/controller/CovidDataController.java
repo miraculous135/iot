@@ -84,4 +84,12 @@ public class CovidDataController {
         }
         return Result.fail(10001,"error");
     }
+    @GetMapping("today")
+    public Result<today> today(String area){
+        return Result.success(covidService.todayData(area));
+    }
+    @GetMapping("total")
+    public Result<total> total(String area){
+        return Result.success(covidService.totalData(area));
+    }
 }
